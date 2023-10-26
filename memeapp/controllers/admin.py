@@ -15,5 +15,5 @@ def index():
     if g.user and not g.user.is_admin:
         return redirect("/home")
 
-    return render_template("admin.html", environ=os.environ, user=g.user,
-                           settings={name: eval(name) for name in settings if not name.startswith("__")})
+    settings_dict = {name: eval(name) for name in settings if not name.startswith("__")}
+    return render_template("admin.html", environ=os.environ, user=g.user, settings=settings_dict)

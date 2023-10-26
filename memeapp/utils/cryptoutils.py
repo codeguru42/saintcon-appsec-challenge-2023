@@ -1,3 +1,6 @@
+import dataclasses
+import json
+
 import bcrypt
 from hashlib import sha256
 from datetime import datetime, timedelta
@@ -40,12 +43,11 @@ def get_session_token(user_id: int, ts: int = int(datetime.utcnow().timestamp())
     assertion = f"{user_id}-{ts}"
     signature = sign(assertion)
     session = Session(ts, user_id, signature)
-    return base64.b64encode(pickle.dumps(session)).decode().strip()
+    return json.dumps(dataclasses.asdict(session))
 
 
 def get_session_from_token(token) -> Session:
-    decoded = base64.b64decode(token.encode())
-    return pickle.loads(decoded)
+    return Session(**json.loads(token))
 
 
 def verify_session_token(request) -> bool:
